@@ -2,1171 +2,1076 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Squad Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campus. — Your Campus, Simplified.</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #080C14;
-  --surface: #0F1620;
-  --card: #141E2D;
-  --border: rgba(255,255,255,0.06);
-  --accent: #3ECFCF;
-  --accent2: #FF6B6B;
-  --accent3: #FFD166;
-  --text: #E8EDF5;
-  --muted: rgba(232,237,245,0.45);
-  --green: #4ADE80;
-  --radius: 16px;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Animated background grid */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(62,207,207,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(62,207,207,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  top: -200px; left: -200px;
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(62,207,207,0.06) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-  animation: drift 12s ease-in-out infinite alternate;
-}
-
-@keyframes drift {
-  from { transform: translate(0, 0); }
-  to { transform: translate(300px, 200px); }
-}
-
-.app {
-  position: relative;
-  z-index: 1;
-  max-width: 480px;
-  margin: 0 auto;
-  width: 100%;
-  padding: 20px 16px 40px;
-  flex: 1;
-}
-
-/* ---- HEADER ---- */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 28px;
-  padding-top: 8px;
-}
-
-.logo {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 1.4rem;
-  letter-spacing: -0.5px;
-}
-
-.logo span { color: var(--accent); }
-
-.header-badge {
-  background: rgba(62,207,207,0.1);
-  border: 1px solid rgba(62,207,207,0.25);
-  color: var(--accent);
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 20px;
-  letter-spacing: 0.5px;
-}
-
-/* ---- TABS ---- */
-.tabs {
-  display: flex;
-  gap: 6px;
-  background: var(--surface);
-  padding: 5px;
-  border-radius: 12px;
-  margin-bottom: 24px;
-  border: 1px solid var(--border);
-}
-
-.tab {
-  flex: 1;
-  padding: 9px;
-  border-radius: 8px;
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.82rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
-
-.tab.active {
-  background: var(--card);
-  color: var(--text);
-  border: 1px solid var(--border);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-}
-
-/* ---- SECTION LABEL ---- */
-.section-label {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 12px;
-}
-
-/* ---- MY LOCATION CARD ---- */
-.my-card {
-  background: linear-gradient(135deg, rgba(62,207,207,0.12) 0%, rgba(62,207,207,0.04) 100%);
-  border: 1px solid rgba(62,207,207,0.2);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 24px;
-}
-
-.my-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
-
-.my-avatar {
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), #1A8F8F);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.2rem;
-  font-weight: 700;
-  font-family: 'Syne', sans-serif;
-  flex-shrink: 0;
-}
-
-.my-info { flex: 1; margin-left: 12px; }
-.my-name { font-weight: 700; font-size: 1rem; }
-.my-status { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
-
-.share-btn {
-  padding: 8px 16px;
-  border-radius: 10px;
-  border: none;
-  background: var(--accent);
-  color: #080C14;
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 700;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.share-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
-.share-btn:active { transform: translateY(0); }
-.share-btn.shared {
-  background: var(--green);
-}
-
-.location-display {
-  background: rgba(0,0,0,0.3);
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 0.78rem;
-  color: var(--muted);
-  font-family: monospace;
-  letter-spacing: 0.3px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.pulse-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--green);
-  flex-shrink: 0;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
-}
-
-/* ---- FRIEND SETUP INPUT ---- */
-.setup-box {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px;
-  margin-bottom: 14px;
-}
-
-.input-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.friend-input {
-  flex: 1;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 14px;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.9rem;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.friend-input:focus { border-color: rgba(62,207,207,0.4); }
-.friend-input::placeholder { color: var(--muted); }
-
-.add-btn {
-  width: 40px; height: 40px;
-  border-radius: 10px;
-  border: none;
-  background: var(--accent);
-  color: #080C14;
-  font-size: 1.3rem;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-
-.add-btn:hover { filter: brightness(1.1); }
-
-/* ---- FRIEND CARDS ---- */
-.friends-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
-
-.friend-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-
-.friend-card.nearby {
-  border-color: rgba(74,222,128,0.4);
-  box-shadow: 0 0 20px rgba(74,222,128,0.1);
-}
-
-.friend-card.nearby::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: var(--green);
-  border-radius: 3px 0 0 3px;
-}
-
-.friend-card.far::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: var(--muted);
-  border-radius: 3px 0 0 3px;
-}
-
-.f-avatar {
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 1rem;
-  flex-shrink: 0;
-}
-
-.f-info { flex: 1; min-width: 0; }
-.f-name { font-weight: 600; font-size: 0.95rem; }
-.f-dist {
-  font-size: 0.75rem;
-  margin-top: 2px;
-  display: flex; align-items: center; gap: 5px;
-}
-
-.f-dist.nearby-text { color: var(--green); }
-.f-dist.far-text { color: var(--muted); }
-
-.f-actions { display: flex; align-items: center; gap: 8px; }
-
-.locate-btn {
-  width: 34px; height: 34px;
-  border-radius: 9px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--muted);
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
-  transition: all 0.2s;
-}
-
-.locate-btn:hover { border-color: rgba(62,207,207,0.3); color: var(--accent); }
-
-.remove-btn {
-  width: 28px; height: 28px;
-  border-radius: 7px;
-  border: 1px solid rgba(255,107,107,0.2);
-  background: transparent;
-  color: rgba(255,107,107,0.5);
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.85rem;
-  transition: all 0.2s;
-}
-.remove-btn:hover { background: rgba(255,107,107,0.1); color: var(--accent2); }
-
-/* ---- MAP PANEL ---- */
-.map-container {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin-bottom: 20px;
-  position: relative;
-}
-
-.map-header {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.map-title { font-weight: 600; font-size: 0.9rem; }
-.map-sub { font-size: 0.75rem; color: var(--muted); }
-
-.map-area {
-  width: 100%;
-  height: 280px;
-  background: #0d1a2a;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Radar rings */
-.radar {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.radar-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(62,207,207,0.15);
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.radar-sweep {
-  width: 200px; height: 200px;
-  border-radius: 50%;
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  background: conic-gradient(from 0deg, transparent 0deg, rgba(62,207,207,0.15) 60deg, transparent 60deg);
-  animation: sweep 4s linear infinite;
-}
-
-@keyframes sweep { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
-
-/* Map dots */
-.map-dot {
-  position: absolute;
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-  transition: transform 0.3s;
-  z-index: 2;
-}
-
-.map-dot:hover { transform: translate(-50%, -50%) scale(1.4); }
-
-.map-dot::after {
-  content: attr(data-name);
-  position: absolute;
-  top: -22px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,0,0,0.8);
-  color: #fff;
-  font-size: 0.65rem;
-  padding: 2px 6px;
-  border-radius: 4px;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-.map-dot.me {
-  background: var(--accent);
-  box-shadow: 0 0 0 4px rgba(62,207,207,0.25);
-  width: 16px; height: 16px;
-}
-
-/* ---- SETTINGS TAB ---- */
-.settings-section { margin-bottom: 24px; }
-
-.setting-item {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.setting-text { flex: 1; }
-.setting-label { font-weight: 600; font-size: 0.9rem; }
-.setting-desc { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-
-.toggle {
-  width: 44px; height: 24px;
-  border-radius: 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  cursor: pointer;
-  position: relative;
-  transition: background 0.2s;
-  flex-shrink: 0;
-}
-
-.toggle.on { background: var(--accent); border-color: var(--accent); }
-
-.toggle::after {
-  content: '';
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  background: #fff;
-  position: absolute;
-  top: 2px; left: 2px;
-  transition: transform 0.2s;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-}
-
-.toggle.on::after { transform: translateX(20px); }
-
-.radius-slider {
-  width: 100%;
-  margin-top: 10px;
-  accent-color: var(--accent);
-}
-
-/* ---- NOTIFICATION TOAST ---- */
-.toast-container {
-  position: fixed;
-  top: 20px; left: 50%;
-  transform: translateX(-50%);
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  pointer-events: none;
-  width: 340px;
-  max-width: calc(100vw - 32px);
-}
-
-.toast {
-  background: var(--card);
-  border: 1px solid rgba(74,222,128,0.35);
-  border-radius: 14px;
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(74,222,128,0.1);
-  animation: slideDown 0.35s cubic-bezier(0.34,1.56,0.64,1);
-  pointer-events: all;
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-20px) scale(0.9); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.toast.fade-out { animation: fadeOut 0.3s forwards; }
-@keyframes fadeOut { to { opacity: 0; transform: translateY(-10px) scale(0.95); } }
-
-.toast-icon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.toast-body { flex: 1; }
-.toast-title { font-weight: 700; font-size: 0.9rem; }
-.toast-msg { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
-
-/* ---- EMPTY STATE ---- */
-.empty-state {
-  text-align: center;
-  padding: 30px 20px;
-  color: var(--muted);
-}
-.empty-state .big { font-size: 2.5rem; margin-bottom: 10px; }
-.empty-state p { font-size: 0.85rem; }
-
-/* ---- HIDDEN ---- */
-.hidden { display: none !important; }
-
-/* ---- MY NAME SETUP ---- */
-.setup-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(8,12,20,0.97);
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.setup-modal {
-  background: var(--card);
-  border: 1px solid rgba(62,207,207,0.2);
-  border-radius: 20px;
-  padding: 32px 24px;
-  width: 100%;
-  max-width: 360px;
-  text-align: center;
-}
-
-.setup-modal h2 {
-  font-family: 'Syne', sans-serif;
-  font-size: 1.6rem;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.setup-modal p { color: var(--muted); font-size: 0.85rem; margin-bottom: 24px; }
-
-.setup-modal input {
-  width: 100%;
-  background: var(--surface);
-  border: 1px solid rgba(62,207,207,0.25);
-  border-radius: 12px;
-  padding: 14px 16px;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1rem;
-  outline: none;
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-.setup-modal input::placeholder { color: var(--muted); }
-
-.setup-modal .go-btn {
-  width: 100%;
-  padding: 14px;
-  background: var(--accent);
-  border: none;
-  border-radius: 12px;
-  color: #080C14;
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.setup-modal .go-btn:hover { filter: brightness(1.1); }
-
-/* ---- COLORS ---- */
-.c1 { background: linear-gradient(135deg, #3ECFCF, #1A8F8F); }
-.c2 { background: linear-gradient(135deg, #FF6B6B, #CC3333); }
-.c3 { background: linear-gradient(135deg, #FFD166, #CC9900); }
-.c4 { background: linear-gradient(135deg, #A78BFA, #6D28D9); }
-.c5 { background: linear-gradient(135deg, #FB923C, #C2410C); }
-
-.dot1 { background: #3ECFCF; }
-.dot2 { background: #FF6B6B; }
-.dot3 { background: #FFD166; }
-.dot4 { background: #A78BFA; }
-.dot5 { background: #FB923C; }
-
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink: #FF2E7A;
+    --dark: #0F0F10;
+    --light-gray: #F5F557;
+    --border: #E6E6E6;
+    --white: #FFFFFF;
+    --text-muted: #6B6B6B;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--dark);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--dark);
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--pink); }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--dark);
+    font-size: 15px;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--pink); }
+
+  .btn-primary {
+    background: var(--pink);
+    color: var(--white);
+    border: none;
+    border-radius: 999px;
+    padding: 12px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255,46,122,0.35);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--dark);
+    border: none;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s;
+  }
+  .btn-ghost:hover { gap: 10px; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 48px 80px;
+    gap: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-blob {
+    position: absolute;
+    right: -80px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 520px;
+    height: 520px;
+    background: #FFE8F0;
+    border-radius: 50%;
+    z-index: 0;
+  }
+
+  .hero-left { position: relative; z-index: 1; }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #FFF0F5;
+    border: 1px solid #FFD0E3;
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--pink);
+    font-weight: 500;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--pink);
+    border-radius: 50%;
+  }
+
+  h1 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(48px, 5vw, 72px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 8px;
+    animation: fadeUp 0.7s 0.1s ease both;
+  }
+
+  h1 em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    color: var(--pink);
+    font-weight: 400;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 24px 0 40px;
+    max-width: 420px;
+    animation: fadeUp 0.7s 0.2s ease both;
+  }
+
+  .hero-cta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    animation: fadeUp 0.7s 0.3s ease both;
+  }
+
+  .hero-right {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-logo-mark {
+    position: relative;
+    width: 320px;
+    height: 320px;
+  }
+
+  .logo-c {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ── STATS ── */
+  .stats-bar {
+    background: var(--dark);
+    padding: 40px 48px;
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-icon svg { color: var(--pink); }
+
+  .stat-num {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -1px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 2px;
+  }
+
+  /* ── FEATURES SECTION ── */
+  .section {
+    padding: 100px 48px;
+  }
+
+  .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(32px, 3.5vw, 52px);
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .section-title em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    color: var(--pink);
+    font-weight: 400;
+  }
+
+  .section-sub {
+    font-size: 17px;
+    color: var(--text-muted);
+    max-width: 500px;
+    line-height: 1.6;
+  }
+
+  /* Features grid */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 64px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .feature-card {
+    background: var(--white);
+    padding: 40px 32px;
+    transition: background 0.25s;
+    cursor: default;
+  }
+
+  .feature-card:hover { background: #FFF5F9; }
+
+  .feature-icon {
+    width: 52px;
+    height: 52px;
+    background: #FFF0F5;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    transition: transform 0.25s;
+  }
+
+  .feature-card:hover .feature-icon { transform: scale(1.08); }
+
+  .feature-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+  }
+
+  .feature-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── MOBILE MOCKUP SECTION ── */
+  .mobile-section {
+    padding: 100px 48px;
+    background: var(--dark);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .mobile-section .section-title,
+  .mobile-section .section-label { color: var(--white); }
+  .mobile-section .section-title em { color: var(--pink); }
+  .mobile-section .section-sub { color: rgba(255,255,255,0.55); }
+
+  .phones-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .phone {
+    background: #1A1A1A;
+    border-radius: 36px;
+    border: 2px solid #2A2A2A;
+    overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .phone-main { width: 180px; height: 360px; }
+  .phone-side { width: 160px; height: 320px; transform: translateY(20px); opacity: 0.7; }
+
+  .phone-notch {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 22px;
+    background: #0F0F10;
+    border-radius: 12px;
+    z-index: 2;
+  }
+
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    padding: 40px 14px 14px;
+    font-size: 10px;
+  }
+
+  .phone-greeting {
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .phone-sub {
+    color: rgba(255,255,255,0.4);
+    font-size: 10px;
+    margin-bottom: 16px;
+  }
+
+  .phone-section-title {
+    color: rgba(255,255,255,0.6);
+    font-size: 10px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .phone-section-title span { color: var(--pink); }
+
+  .phone-community {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    margin-bottom: 4px;
+  }
+
+  .phone-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    background: var(--pink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+
+  .phone-comm-name {
+    color: var(--white);
+    font-size: 10px;
+    font-weight: 500;
+  }
+
+  .phone-comm-members {
+    color: rgba(255,255,255,0.35);
+    font-size: 9px;
+  }
+
+  .phone-fab {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    background: var(--pink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    font-weight: 300;
+    box-shadow: 0 4px 12px rgba(255,46,122,0.4);
+  }
+
+  /* ── EVENTS PREVIEW ── */
+  .events-section {
+    padding: 100px 48px;
+  }
+
+  .events-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 48px;
+  }
+
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .event-card {
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+
+  .event-card:hover {
+    border-color: var(--pink);
+    box-shadow: 0 8px 32px rgba(255,46,122,0.1);
+    transform: translateY(-4px);
+  }
+
+  .event-date-badge {
+    width: 48px;
+    height: 52px;
+    background: var(--pink);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: white;
+  }
+
+  .event-date-day { font-size: 20px; font-weight: 700; line-height: 1; }
+  .event-date-month { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .event-name {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    margin-bottom: 8px;
+  }
+
+  .event-meta {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .event-tag {
+    display: inline-block;
+    background: #FFF0F5;
+    color: var(--pink);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+
+  .view-details {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--pink);
+    font-weight: 500;
+    margin-top: 20px;
+    transition: gap 0.2s;
+  }
+
+  .event-card:hover .view-details { gap: 10px; }
+
+  /* ── COMMUNITIES ── */
+  .communities-section {
+    padding: 100px 48px;
+    background: #FAFAFA;
+  }
+
+  .communities-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  .community-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+
+  .community-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  }
+
+  .community-icon {
+    width: 52px;
+    height: 52px;
+    background: var(--pink);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    font-size: 22px;
+  }
+
+  .community-name {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+
+  .community-members {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .community-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    background: #F5F5F5;
+    color: #555;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+
+  /* ── CTA SECTION ── */
+  .cta-section {
+    padding: 100px 48px;
+    text-align: center;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-blob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 300px;
+    background: radial-gradient(ellipse, rgba(255,46,122,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-section .section-label { color: rgba(255,255,255,0.4); }
+
+  .cta-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(40px, 5vw, 72px);
+    font-weight: 700;
+    letter-spacing: -2px;
+    color: var(--white);
+    line-height: 1.05;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .cta-title em {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    color: var(--pink);
+    font-weight: 400;
+  }
+
+  .cta-sub {
+    font-size: 18px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 48px;
+    position: relative;
+  }
+
+  .cta-btns {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    position: relative;
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 999px;
+    padding: 12px 28px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.2s, color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .btn-outline:hover {
+    border-color: rgba(255,255,255,0.5);
+    color: white;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left { display: flex; flex-direction: column; gap: 4px; }
+  .footer-sub { font-size: 13px; color: var(--text-muted); }
+
+  .footer-links {
+    display: flex;
+    gap: 32px;
+  }
+
+  .footer-links a {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--pink); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .hero-right { animation: float 4s ease-in-out infinite; }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; }
+    .hero-right { display: none; }
+    .stats-bar { gap: 32px; padding: 32px 24px; }
+    .section { padding: 64px 24px; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .mobile-section { grid-template-columns: 1fr; padding: 64px 24px; }
+    .events-grid, .communities-grid { grid-template-columns: 1fr; }
+    .events-section, .communities-section, .cta-section { padding: 64px 24px; }
+    footer { flex-direction: column; gap: 24px; padding: 32px 24px; }
+    .events-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- Setup Overlay -->
-<div class="setup-overlay" id="setupOverlay">
-  <div class="setup-modal">
-    <div style="font-size:2.5rem;margin-bottom:12px;">📡</div>
-    <h2>Squad Tracker</h2>
-    <p>Enter your name to get started. Your friends will appear on your radar once you add them.</p>
-    <input type="text" id="myNameInput" placeholder="Your name..." maxlength="16" />
-    <button class="go-btn" onclick="startApp()">Let's Go →</button>
+<!-- NAV -->
+<nav>
+  <div class="logo">campus<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#communities">Communities</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <a href="#" class="btn-primary">Get Started</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-blob"></div>
+  <div class="hero-left">
+    <div class="hero-tag">Now available at 50+ colleges</div>
+    <h1>Your Campus.<br><em>Simplified.</em></h1>
+    <p class="hero-sub">Everything you need for college life, all in one place. Connect, organize, and stay ahead — your way.</p>
+    <div class="hero-cta">
+      <a href="#" class="btn-primary">Get Started</a>
+      <a href="#features" class="btn-ghost">Learn More →</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <svg class="logo-c" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="160" cy="160" r="155" fill="#0F0F10"/>
+      <path d="M220 100C200 80 172 68 140 68C92 68 52 104 52 160C52 216 92 252 140 252C172 252 200 240 220 220" stroke="white" stroke-width="36" stroke-linecap="round" fill="none"/>
+      <circle cx="232" cy="160" r="30" fill="#FF2E7A"/>
+    </svg>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-icon">
+      <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#FF2E7A" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div>
+      <div class="stat-num">10K+</div>
+      <div class="stat-label">Active Students</div>
+    </div>
+  </div>
+  <div class="stat">
+    <div class="stat-icon">
+      <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#FF2E7A" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </div>
+    <div>
+      <div class="stat-num">500+</div>
+      <div class="stat-label">Communities</div>
+    </div>
+  </div>
+  <div class="stat">
+    <div class="stat-icon">
+      <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#FF2E7A" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    </div>
+    <div>
+      <div class="stat-num">50+</div>
+      <div class="stat-label">Colleges</div>
+    </div>
+  </div>
+  <div class="stat">
+    <div class="stat-icon">
+      <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#FF2E7A" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    </div>
+    <div>
+      <div class="stat-num">1</div>
+      <div class="stat-label">Platform</div>
+    </div>
   </div>
 </div>
 
-<!-- Toast container -->
-<div class="toast-container" id="toastContainer"></div>
-
-<div class="app">
-  <!-- Header -->
-  <div class="header">
-    <div class="logo">Squad<span>Track</span></div>
-    <div class="header-badge" id="onlineCount">0 Friends</div>
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div style="max-width:600px" class="reveal">
+    <div class="section-label">Everything in one place</div>
+    <h2 class="section-title">Built for <em>student life</em></h2>
+    <p class="section-sub">From clubs to classes, events to resources — campus brings it all together so you never miss a beat.</p>
   </div>
-
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('friends')" id="tab-friends">👥 Friends</button>
-    <button class="tab" onclick="switchTab('map')" id="tab-map">🗺️ Map</button>
-    <button class="tab" onclick="switchTab('settings')" id="tab-settings">⚙️ Settings</button>
-  </div>
-
-  <!-- FRIENDS TAB -->
-  <div id="panel-friends">
-    <!-- My Location -->
-    <div class="section-label">MY LOCATION</div>
-    <div class="my-card">
-      <div class="my-card-top">
-        <div class="my-avatar" id="myAvatar">?</div>
-        <div class="my-info">
-          <div class="my-name" id="myNameDisplay">—</div>
-          <div class="my-status" id="myStatus">Location not shared</div>
-        </div>
-        <button class="share-btn" id="shareBtn" onclick="shareMyLocation()">📍 Share</button>
+  <div class="features-grid reveal" style="transition-delay:0.15s">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#FF2E7A" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </div>
-      <div class="location-display" id="myLocDisplay">
-        <span>Tap "Share" to broadcast your location</span>
-      </div>
+      <div class="feature-title">Connect</div>
+      <div class="feature-desc">Find peers, clubs & communities that match your interests and goals.</div>
     </div>
-
-    <!-- Add Friend -->
-    <div class="section-label">MY FRIENDS</div>
-    <div class="setup-box" style="margin-bottom:12px;">
-      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;">Add a friend by their name. They need to open this app and share their location too.</div>
-      <div class="input-row">
-        <input class="friend-input" id="friendNameInput" placeholder="Friend's name..." maxlength="16" onkeydown="if(event.key==='Enter') addFriend()" />
-        <button class="add-btn" onclick="addFriend()">+</button>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#FF2E7A" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       </div>
+      <div class="feature-title">Organize</div>
+      <div class="feature-desc">Events, schedules & tasks — keep your academic life perfectly structured.</div>
     </div>
-
-    <!-- Friends List -->
-    <div class="friends-list" id="friendsList">
-      <div class="empty-state">
-        <div class="big">🤝</div>
-        <p>No friends added yet.<br>Add up to 4 friends above!</p>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#FF2E7A" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       </div>
+      <div class="feature-title">Stay Ahead</div>
+      <div class="feature-desc">Resources, updates & announcements delivered when you need them most.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#FF2E7A" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      </div>
+      <div class="feature-title">Your Way</div>
+      <div class="feature-desc">Customize your campus experience — personalized for how you study and grow.</div>
     </div>
   </div>
+</section>
 
-  <!-- MAP TAB -->
-  <div id="panel-map" class="hidden">
-    <div class="section-label">LIVE RADAR</div>
-    <div class="map-container">
-      <div class="map-header">
-        <div>
-          <div class="map-title">Squad Radar</div>
-          <div class="map-sub" id="mapSub">Share your location to see friends on radar</div>
-        </div>
-        <div style="font-size:1.2rem;">📡</div>
-      </div>
-      <div class="map-area" id="mapArea">
-        <!-- Radar rings -->
-        <div class="radar">
-          <div class="radar-ring" style="width:60px;height:60px;"></div>
-          <div class="radar-ring" style="width:120px;height:120px;"></div>
-          <div class="radar-ring" style="width:180px;height:180px;"></div>
-          <div class="radar-ring" style="width:240px;height:240px;"></div>
-          <div class="radar-sweep"></div>
-        </div>
-        <!-- Dots injected by JS -->
-      </div>
-    </div>
-    <div style="font-size:0.75rem;color:var(--muted);text-align:center;padding:0 10px;">
-      📌 This is a simulated radar. Real map integration requires a backend server for multi-user location sync.
+<!-- MOBILE SECTION -->
+<section class="mobile-section" id="about">
+  <div class="reveal">
+    <div class="section-label">Mobile App</div>
+    <h2 class="section-title">Campus in your<br><em>pocket</em></h2>
+    <p class="section-sub" style="color:rgba(255,255,255,0.55)">Everything synced across web and mobile. Your communities, tasks, and events — wherever you go.</p>
+    <div style="margin-top:36px;display:flex;gap:12px;">
+      <a href="#" class="btn-primary">Download App</a>
+      <a href="#" class="btn-outline">Learn More →</a>
     </div>
   </div>
-
-  <!-- SETTINGS TAB -->
-  <div id="panel-settings" class="hidden">
-    <div class="section-label">NOTIFICATIONS</div>
-    <div class="settings-section">
-      <div class="setting-item">
-        <div class="setting-text">
-          <div class="setting-label">Friend Nearby Alert</div>
-          <div class="setting-desc">Notify when a friend is within range</div>
-        </div>
-        <div class="toggle on" id="toggleNotif" onclick="toggleSetting('notif')"></div>
-      </div>
-      <div class="setting-item">
-        <div class="setting-text">
-          <div class="setting-label">Sound Alert</div>
-          <div class="setting-desc">Play a sound when friend is nearby</div>
-        </div>
-        <div class="toggle on" id="toggleSound" onclick="toggleSetting('sound')"></div>
-      </div>
-      <div class="setting-item">
-        <div class="setting-text">
-          <div class="setting-label">Background Tracking</div>
-          <div class="setting-desc">Keep tracking even when app is minimized</div>
-        </div>
-        <div class="toggle" id="toggleBg" onclick="toggleSetting('bg')"></div>
+  <div class="phones-row reveal" style="transition-delay:0.15s">
+    <div class="phone phone-side">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div style="color:white;font-size:12px;font-weight:600;margin-bottom:4px">Explore</div>
+        <div style="background:rgba(255,255,255,0.07);border-radius:8px;padding:6px 10px;font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:12px;">Search communities...</div>
+        <div class="phone-section-title">All &nbsp; Clubs &nbsp; Academics &nbsp; Hobbies</div>
+        <div class="phone-community"><div class="phone-avatar">💻</div><div><div class="phone-comm-name">Developers Club</div><div class="phone-comm-members">1.2K members</div></div></div>
+        <div class="phone-community"><div class="phone-avatar">📸</div><div><div class="phone-comm-name">Design Club</div><div class="phone-comm-members">960 members</div></div></div>
+        <div class="phone-community"><div class="phone-avatar">🎵</div><div><div class="phone-comm-name">Music Club</div><div class="phone-comm-members">1.3K members</div></div></div>
       </div>
     </div>
-
-    <div class="section-label">DETECTION RANGE</div>
-    <div class="settings-section">
-      <div class="setting-item" style="flex-direction:column;align-items:flex-start;gap:10px;">
-        <div style="display:flex;justify-content:space-between;width:100%;align-items:center;">
-          <div>
-            <div class="setting-label">Alert Radius</div>
-            <div class="setting-desc">Notify if friend is within this distance</div>
-          </div>
-          <div style="font-weight:700;color:var(--accent)" id="radiusDisplay">100m</div>
+    <div class="phone phone-main">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-greeting">Hey, Alex 👋</div>
+        <div class="phone-sub">What's happening?</div>
+        <div class="phone-section-title">Your Communities <span>View all</span></div>
+        <div class="phone-community"><div class="phone-avatar">💻</div><div><div class="phone-comm-name">Developers Club</div><div class="phone-comm-members">1.2K members</div></div></div>
+        <div class="phone-community"><div class="phone-avatar">📸</div><div><div class="phone-comm-name">Photography Club</div><div class="phone-comm-members">854 members</div></div></div>
+        <div class="phone-community"><div class="phone-avatar">🚀</div><div><div class="phone-comm-name">Entrepreneurship Cell</div><div class="phone-comm-members">950 members</div></div></div>
+        <div class="phone-section-title" style="margin-top:12px;">Your Tasks <span>View all</span></div>
+        <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:8px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;">
+          <div><div style="color:white;font-size:10px;font-weight:500">UI/UX Assignment</div><div style="color:rgba(255,255,255,0.35);font-size:9px">Due in 2 days</div></div>
+          <div style="color:var(--pink);font-size:9px;font-weight:600">HIGH</div>
         </div>
-        <input type="range" class="radius-slider" min="50" max="500" step="50" value="100" oninput="updateRadius(this.value)" />
-        <div style="display:flex;justify-content:space-between;width:100%;font-size:0.7rem;color:var(--muted);">
-          <span>50m</span><span>500m</span>
+        <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:8px;display:flex;justify-content:space-between;align-items:center;">
+          <div><div style="color:white;font-size:10px;font-weight:500">Maths Homework</div><div style="color:rgba(255,255,255,0.35);font-size:9px">Due in 7 days</div></div>
+          <div style="color:#F5A623;font-size:9px;font-weight:600">MED</div>
         </div>
+        <div class="phone-fab">+</div>
       </div>
     </div>
-
-    <div class="section-label">APP INFO</div>
-    <div class="settings-section">
-      <div class="setting-item">
-        <div class="setting-text">
-          <div class="setting-label">How it works</div>
-          <div class="setting-desc">Each friend opens this app → shares location → you get notified when they're nearby</div>
+    <div class="phone phone-side">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div style="color:white;font-size:12px;font-weight:600;margin-bottom:12px">Events</div>
+        <div style="display:flex;gap:6px;margin-bottom:12px">
+          <div style="background:var(--pink);color:white;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-direction:column"><div>18</div><div style="font-size:7px">SAT</div></div>
+          <div style="background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;flex-direction:column"><div>19</div><div style="font-size:7px">SUN</div></div>
+          <div style="background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;flex-direction:column"><div>20</div><div style="font-size:7px">MON</div></div>
         </div>
-        <div style="font-size:1.2rem;">ℹ️</div>
-      </div>
-      <div class="setting-item" style="cursor:pointer;" onclick="resetApp()">
-        <div class="setting-text">
-          <div class="setting-label" style="color:var(--accent2);">Reset App</div>
-          <div class="setting-desc">Clear your name and all friends</div>
+        <div class="phone-community" style="flex-direction:column;align-items:flex-start;gap:4px;">
+          <div style="font-size:9px;color:rgba(255,255,255,0.4)">May 18 • Online</div>
+          <div style="color:white;font-size:10px;font-weight:500">Hackathon 2024</div>
         </div>
-        <div style="font-size:1rem;">🗑️</div>
+        <div class="phone-community" style="margin-top:4px;flex-direction:column;align-items:flex-start;gap:4px;">
+          <div style="font-size:9px;color:rgba(255,255,255,0.4)">May 20 • Your College</div>
+          <div style="color:white;font-size:10px;font-weight:500">Design Thinking Workshop</div>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
+
+<!-- EVENTS -->
+<section class="events-section" id="pricing">
+  <div class="events-header">
+    <div class="reveal">
+      <div class="section-label">Upcoming Events</div>
+      <h2 class="section-title">Don't miss<br><em>a moment</em></h2>
+    </div>
+    <a href="#" class="btn-primary reveal" style="transition-delay:0.1s">View All Events</a>
+  </div>
+  <div class="events-grid">
+    <div class="event-card reveal">
+      <div class="event-date-badge">
+        <div class="event-date-day">18</div>
+        <div class="event-date-month">May</div>
+      </div>
+      <div class="event-name">Hackathon 2024</div>
+      <div class="event-meta">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Online Event
+      </div>
+      <div class="event-tag">Technology</div>
+      <div class="view-details">View Details →</div>
+    </div>
+    <div class="event-card reveal" style="transition-delay:0.1s">
+      <div class="event-date-badge">
+        <div class="event-date-day">20</div>
+        <div class="event-date-month">May</div>
+      </div>
+      <div class="event-name">Design Thinking Workshop</div>
+      <div class="event-meta">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Your College
+      </div>
+      <div class="event-tag">Design</div>
+      <div class="view-details">View Details →</div>
+    </div>
+    <div class="event-card reveal" style="transition-delay:0.2s">
+      <div class="event-date-badge">
+        <div class="event-date-day">25</div>
+        <div class="event-date-month">May</div>
+      </div>
+      <div class="event-name">Campus Indie Fest</div>
+      <div class="event-meta">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Main Auditorium
+      </div>
+      <div class="event-tag">Music</div>
+      <div class="view-details">View Details →</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITIES -->
+<section class="communities-section" id="communities">
+  <div class="reveal">
+    <div class="section-label">Communities</div>
+    <h2 class="section-title">Find your<br><em>people</em></h2>
+    <p class="section-sub">Over 500 active communities waiting for you. From coding to photography, there's a place for everyone.</p>
+  </div>
+  <div class="communities-grid">
+    <div class="community-card reveal">
+      <div class="community-icon">💻</div>
+      <div class="community-name">Developers Club</div>
+      <div class="community-members">1.2K members</div>
+      <div class="community-tags"><span class="tag">Coding</span><span class="tag">Tech</span><span class="tag">Open Source</span></div>
+    </div>
+    <div class="community-card reveal" style="transition-delay:0.1s">
+      <div class="community-icon">📸</div>
+      <div class="community-name">Photography Club</div>
+      <div class="community-members">854 members</div>
+      <div class="community-tags"><span class="tag">Photography</span><span class="tag">Art</span><span class="tag">Visual</span></div>
+    </div>
+    <div class="community-card reveal" style="transition-delay:0.2s">
+      <div class="community-icon">🚀</div>
+      <div class="community-name">Entrepreneurship Cell</div>
+      <div class="community-members">950 members</div>
+      <div class="community-tags"><span class="tag">Startup</span><span class="tag">Business</span><span class="tag">Innovation</span></div>
+    </div>
+    <div class="community-card reveal" style="transition-delay:0.05s">
+      <div class="community-icon">🎵</div>
+      <div class="community-name">Music Club</div>
+      <div class="community-members">1.3K members</div>
+      <div class="community-tags"><span class="tag">Music</span><span class="tag">Performance</span><span class="tag">Bands</span></div>
+    </div>
+    <div class="community-card reveal" style="transition-delay:0.15s">
+      <div class="community-icon">🤖</div>
+      <div class="community-name">AI & ML Club</div>
+      <div class="community-members">780 members</div>
+      <div class="community-tags"><span class="tag">AI</span><span class="tag">Machine Learning</span><span class="tag">Research</span></div>
+    </div>
+    <div class="community-card reveal" style="transition-delay:0.25s">
+      <div class="community-icon">📚</div>
+      <div class="community-name">Literature Club</div>
+      <div class="community-members">500 members</div>
+      <div class="community-tags"><span class="tag">Books</span><span class="tag">Writing</span><span class="tag">Poetry</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-blob"></div>
+  <div class="section-label reveal">Get Started Today</div>
+  <h2 class="cta-title reveal">Built for students.<br>Designed for <em>everyone.</em></h2>
+  <p class="cta-sub reveal">Join 10,000+ students already simplifying their campus life.</p>
+  <div class="cta-btns reveal">
+    <a href="#" class="btn-primary" style="font-size:16px;padding:16px 36px">Get Started Free</a>
+    <a href="https://campus-free.vercel.app" class="btn-outline">campus-free.vercel.app ↗</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <div class="logo">campus<span>.</span></div>
+    <div class="footer-sub">Your Campus, Simplified.</div>
+  </div>
+  <div class="footer-links">
+    <a href="#">Features</a>
+    <a href="#">Communities</a>
+    <a href="#">Pricing</a>
+    <a href="#">About</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+  </div>
+</footer>
 
 <script>
-// ---- STATE ----
-let myName = localStorage.getItem('squadMyName') || '';
-let myLocation = JSON.parse(localStorage.getItem('squadMyLoc') || 'null');
-let friends = JSON.parse(localStorage.getItem('squadFriends') || '[]');
-let settings = JSON.parse(localStorage.getItem('squadSettings') || '{"notif":true,"sound":true,"bg":false}');
-let alertRadius = parseInt(localStorage.getItem('squadRadius') || '100');
-let watchId = null;
-let notifiedFriends = new Set();
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
 
-const COLORS = ['c1','c2','c3','c4','c5'];
-const DOT_CLASSES = ['dot1','dot2','dot3','dot4','dot5'];
-const AVATARBG = ['#3ECFCF','#FF6B6B','#FFD166','#A78BFA','#FB923C'];
-
-// ---- INIT ----
-window.onload = () => {
-  if (myName) {
-    document.getElementById('setupOverlay').style.display = 'none';
-    initApp();
-  }
-  document.getElementById('myNameInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') startApp();
-  });
-};
-
-function startApp() {
-  const val = document.getElementById('myNameInput').value.trim();
-  if (!val) return;
-  myName = val;
-  localStorage.setItem('squadMyName', myName);
-  document.getElementById('setupOverlay').style.display = 'none';
-  initApp();
-}
-
-function initApp() {
-  document.getElementById('myNameDisplay').textContent = myName;
-  document.getElementById('myAvatar').textContent = myName[0].toUpperCase();
-  document.getElementById('radiusDisplay').textContent = alertRadius + 'm';
-  document.querySelector('.radius-slider').value = alertRadius;
-  updateSettingToggles();
-
-  if (myLocation) {
-    showMyLocation(myLocation);
-    document.getElementById('shareBtn').textContent = '🔄 Update';
-    document.getElementById('shareBtn').classList.add('shared');
-    startWatching();
-  }
-
-  renderFriends();
-  updateOnlineCount();
-  renderMap();
-
-  // Simulate friend location updates every 15 seconds
-  setInterval(simulateFriendUpdates, 15000);
-}
-
-// ---- LOCATION ----
-function shareMyLocation() {
-  const btn = document.getElementById('shareBtn');
-  btn.textContent = '⏳ Getting...';
-  btn.disabled = true;
-
-  if (!navigator.geolocation) {
-    btn.textContent = '❌ Not supported';
-    btn.disabled = false;
-    showToast('❌', 'Not Supported', 'Your browser does not support GPS.');
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude, acc: Math.round(pos.coords.accuracy) };
-      myLocation = loc;
-      localStorage.setItem('squadMyLoc', JSON.stringify(loc));
-      showMyLocation(loc);
-      btn.textContent = '✅ Shared';
-      btn.classList.add('shared');
-      btn.disabled = false;
-      startWatching();
-      showToast('📍', 'Location Shared!', 'Your friends can now find you.');
-      renderMap();
-    },
-    err => {
-      btn.textContent = '📍 Share';
-      btn.disabled = false;
-      showToast('❌', 'Location Error', err.message.substring(0, 60));
-    },
-    { enableHighAccuracy: true, timeout: 10000 }
-  );
-}
-
-function showMyLocation(loc) {
-  document.getElementById('myStatus').textContent = 'Live · Accuracy ±' + loc.acc + 'm';
-  document.getElementById('myLocDisplay').innerHTML =
-    `<span class="pulse-dot"></span><span>📍 ${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}</span>`;
-}
-
-function startWatching() {
-  if (watchId) navigator.geolocation.clearWatch(watchId);
-  if (!navigator.geolocation) return;
-  watchId = navigator.geolocation.watchPosition(pos => {
-    const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude, acc: Math.round(pos.coords.accuracy) };
-    myLocation = loc;
-    localStorage.setItem('squadMyLoc', JSON.stringify(loc));
-    showMyLocation(loc);
-    checkNearby();
-    renderMap();
-  }, null, { enableHighAccuracy: true });
-}
-
-// ---- FRIENDS ----
-function addFriend() {
-  const input = document.getElementById('friendNameInput');
-  const name = input.value.trim();
-  if (!name) return;
-  if (friends.length >= 4) { showToast('⚠️', 'Max Friends', 'You can add up to 4 friends only.'); return; }
-  if (friends.find(f => f.name.toLowerCase() === name.toLowerCase())) {
-    showToast('⚠️', 'Already Added', name + ' is already in your squad.'); return;
-  }
-  if (name.toLowerCase() === myName.toLowerCase()) {
-    showToast('😄', 'That\'s You!', 'You can\'t add yourself as a friend.'); return;
-  }
-
-  // Create friend with simulated location nearby
-  const friend = {
-    id: Date.now(),
-    name: name,
-    colorIdx: friends.length,
-    location: myLocation ? simulateNearbyLocation(myLocation, Math.random() < 0.4) : null,
-    lastSeen: Date.now()
-  };
-
-  friends.push(friend);
-  localStorage.setItem('squadFriends', JSON.stringify(friends));
-  input.value = '';
-  renderFriends();
-  updateOnlineCount();
-  renderMap();
-  showToast('✅', 'Friend Added!', name + ' joined your squad.');
-}
-
-function removeFriend(id) {
-  friends = friends.filter(f => f.id !== id);
-  localStorage.setItem('squadFriends', JSON.stringify(friends));
-  renderFriends();
-  updateOnlineCount();
-  renderMap();
-}
-
-function simulateNearbyLocation(base, nearby) {
-  // Simulate a friend being within ~50-300m
-  const dist = nearby ? (Math.random() * 0.0005 + 0.0001) : (Math.random() * 0.003 + 0.001);
-  return {
-    lat: base.lat + (Math.random() - 0.5) * dist * 2,
-    lng: base.lng + (Math.random() - 0.5) * dist * 2,
-    acc: Math.round(Math.random() * 10 + 5)
-  };
-}
-
-function simulateFriendUpdates() {
-  if (!myLocation) return;
-  let changed = false;
-  friends.forEach(f => {
-    if (f.location && Math.random() > 0.4) {
-      // Slightly drift friend location
-      f.location.lat += (Math.random() - 0.5) * 0.0001;
-      f.location.lng += (Math.random() - 0.5) * 0.0001;
-      f.lastSeen = Date.now();
-      changed = true;
-    }
-  });
-  if (changed) {
-    localStorage.setItem('squadFriends', JSON.stringify(friends));
-    renderFriends();
-    checkNearby();
-    renderMap();
-  }
-}
-
-function getDistance(loc1, loc2) {
-  const R = 6371000;
-  const lat1 = loc1.lat * Math.PI / 180;
-  const lat2 = loc2.lat * Math.PI / 180;
-  const dlat = (loc2.lat - loc1.lat) * Math.PI / 180;
-  const dlng = (loc2.lng - loc1.lng) * Math.PI / 180;
-  const a = Math.sin(dlat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dlng/2)**2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-}
-
-function formatDist(m) {
-  if (m < 1000) return Math.round(m) + 'm away';
-  return (m/1000).toFixed(1) + 'km away';
-}
-
-function checkNearby() {
-  if (!myLocation || !settings.notif) return;
-  friends.forEach(f => {
-    if (!f.location) return;
-    const dist = getDistance(myLocation, f.location);
-    const key = f.id + '_' + Math.floor(Date.now() / 60000); // once per minute per friend
-    if (dist <= alertRadius && !notifiedFriends.has(key)) {
-      notifiedFriends.add(key);
-      showToast('🎯', f.name + ' is nearby!', formatDist(dist) + ' from you · ' + alertRadius + 'm range');
-      if (settings.sound) playBeep();
-    }
-  });
-}
-
-function playBeep() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.frequency.setValueAtTime(880, ctx.currentTime);
-    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-    osc.start(); osc.stop(ctx.currentTime + 0.4);
-  } catch(e) {}
-}
-
-// ---- RENDER FRIENDS ----
-function renderFriends() {
-  const list = document.getElementById('friendsList');
-  if (friends.length === 0) {
-    list.innerHTML = `<div class="empty-state"><div class="big">🤝</div><p>No friends added yet.<br>Add up to 4 friends above!</p></div>`;
-    return;
-  }
-
-  list.innerHTML = friends.map((f, i) => {
-    let distInfo = '';
-    let isNearby = false;
-    if (myLocation && f.location) {
-      const dist = getDistance(myLocation, f.location);
-      isNearby = dist <= alertRadius;
-      distInfo = `<span class="${isNearby ? 'nearby-text' : 'far-text'}">${isNearby ? '🟢' : '⚪'} ${formatDist(dist)}</span>`;
-    } else {
-      distInfo = `<span style="color:var(--muted)">⚫ Location unknown</span>`;
-    }
-    const ago = Math.round((Date.now() - f.lastSeen) / 1000);
-    const agoStr = ago < 60 ? 'just now' : Math.floor(ago/60) + 'm ago';
-
-    return `
-    <div class="friend-card ${isNearby ? 'nearby' : 'far'}" id="fcard-${f.id}">
-      <div class="f-avatar ${COLORS[f.colorIdx % 5]}">${f.name[0].toUpperCase()}</div>
-      <div class="f-info">
-        <div class="f-name">${f.name}</div>
-        <div class="f-dist">${distInfo}&nbsp;·&nbsp;<span style="color:var(--muted);font-size:0.7rem;">${agoStr}</span></div>
-      </div>
-      <div class="f-actions">
-        <button class="locate-btn" title="Locate" onclick="locateFriend(${f.id})">📍</button>
-        <button class="remove-btn" onclick="removeFriend(${f.id})">✕</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function locateFriend(id) {
-  const f = friends.find(x => x.id === id);
-  if (!f || !f.location) { showToast('❓', 'No Location', f.name + ' hasn\'t shared their location yet.'); return; }
-  switchTab('map');
-  showToast('📍', 'Found ' + f.name, `They are at ${f.location.lat.toFixed(5)}, ${f.location.lng.toFixed(5)}`);
-}
-
-// ---- MAP ----
-function renderMap() {
-  const area = document.getElementById('mapArea');
-  // Remove old dots
-  area.querySelectorAll('.map-dot').forEach(d => d.remove());
-
-  if (!myLocation) {
-    document.getElementById('mapSub').textContent = 'Share your location to see friends on radar';
-    return;
-  }
-
-  const W = area.offsetWidth || 340;
-  const H = area.offsetHeight || 280;
-  const cx = W / 2, cy = H / 2;
-
-  // Find max distance for scaling
-  let maxDist = alertRadius * 3;
-  friends.forEach(f => {
-    if (f.location) {
-      const d = getDistance(myLocation, f.location);
-      if (d > maxDist) maxDist = d;
-    }
-  });
-
-  const scale = Math.min(cx, cy) * 0.85 / maxDist;
-
-  // Me dot
-  const meDot = document.createElement('div');
-  meDot.className = 'map-dot me';
-  meDot.setAttribute('data-name', 'You');
-  meDot.style.left = cx + 'px';
-  meDot.style.top = cy + 'px';
-  area.appendChild(meDot);
-
-  // Friend dots
-  friends.forEach((f, i) => {
-    if (!f.location) return;
-    const dLat = (f.location.lat - myLocation.lat) * 111000;
-    const dLng = (f.location.lng - myLocation.lng) * 111000 * Math.cos(myLocation.lat * Math.PI / 180);
-    const px = cx + dLng * scale;
-    const py = cy - dLat * scale;
-
-    const dot = document.createElement('div');
-    dot.className = 'map-dot ' + DOT_CLASSES[f.colorIdx % 5];
-    dot.setAttribute('data-name', f.name);
-    dot.style.left = Math.max(8, Math.min(W-8, px)) + 'px';
-    dot.style.top = Math.max(8, Math.min(H-8, py)) + 'px';
-    area.appendChild(dot);
-  });
-
-  const count = friends.filter(f => f.location).length;
-  document.getElementById('mapSub').textContent = count + ' friend' + (count !== 1 ? 's' : '') + ' visible on radar';
-}
-
-// ---- SETTINGS ----
-function toggleSetting(key) {
-  settings[key] = !settings[key];
-  localStorage.setItem('squadSettings', JSON.stringify(settings));
-  updateSettingToggles();
-}
-
-function updateSettingToggles() {
-  ['notif','sound','bg'].forEach(key => {
-    const el = document.getElementById('toggle' + key.charAt(0).toUpperCase() + key.slice(1));
-    if (el) el.classList.toggle('on', !!settings[key]);
-  });
-}
-
-function updateRadius(val) {
-  alertRadius = parseInt(val);
-  localStorage.setItem('squadRadius', alertRadius);
-  document.getElementById('radiusDisplay').textContent = alertRadius + 'm';
-  renderFriends();
-}
-
-function resetApp() {
-  if (!confirm('Reset everything? This will clear your name and all friends.')) return;
-  localStorage.clear();
-  location.reload();
-}
-
-// ---- TABS ----
-function switchTab(name) {
-  ['friends','map','settings'].forEach(t => {
-    document.getElementById('panel-' + t).classList.toggle('hidden', t !== name);
-    document.getElementById('tab-' + t).classList.toggle('active', t === name);
-  });
-  if (name === 'map') renderMap();
-}
-
-// ---- UTILS ----
-function updateOnlineCount() {
-  const n = friends.length;
-  document.getElementById('onlineCount').textContent = n + ' Friend' + (n !== 1 ? 's' : '');
-}
-
-function showToast(icon, title, msg) {
-  const container = document.getElementById('toastContainer');
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.innerHTML = `<div class="toast-icon">${icon}</div><div class="toast-body"><div class="toast-title">${title}</div><div class="toast-msg">${msg}</div></div>`;
-  container.appendChild(toast);
-  setTimeout(() => {
-    toast.classList.add('fade-out');
-    setTimeout(() => toast.remove(), 300);
-  }, 4000);
-}
-
-// Trigger nearby check on page visibility
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) checkNearby();
-});
+  reveals.forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
